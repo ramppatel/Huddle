@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler');
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../database/db');
 const SetUser = require('../middlewares/auth')
@@ -24,7 +24,7 @@ const LoginPage = asyncHandler(async (req, res) => {
         res.cookie("token", token, {
             httpOnly: true,
             sameSite: "strict",
-            maxAge: 2000 // 5 minutes
+            maxAge: 2000 * 10000 // 5 minutes
         });
 
         res.status(200).json({

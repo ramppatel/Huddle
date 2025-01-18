@@ -3,29 +3,50 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/auth/Button";
 import Input from "../components/auth/Input";
 import { motion } from "framer-motion";
+import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
-  // const dispatch = useDispatch();
-  // const { register, handleSubmit } = useForm();
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [email, setEmail] = useState(""); // State for email
+  const [password, setPassword] = useState(""); // State for password
+  const [error, setError] = useState(""); // State for error messages
+  const [isLoading, setIsLoading] = useState(false); // State for loading indicator
 
-  const login = async (data) => {
-    // setError("");
-    // setIsLoading(true);
-    // try {
-    //   const session = await authService.login(data);
-    //   if (session) {
-    //     const userData = await authService.getCurrentUser();
-    //     if (userData) dispatch(authLogin(userData));
-    //     navigate("/");
-    //   }
-    // } catch (error) {
-    //   setError(error.message);
-    // } finally {
-    //   setIsLoading(false);
-    // }
+  const handleLogin = async () => {
+    setError(""); // Clear previous errors
+    setIsLoading(true); // Set loading state
+
+    try {
+      
+      console.log("I am before axios");
+      const response = await fetch("http://localhost:3001/dashboard/api/login", {
+        method: "POST", // HTTP method
+        headers: {
+          "Content-Type": "application/json", // Set content type
+        },
+        body: JSON.stringify({
+          email,       // Sending email state
+          password,    // Sending password state
+        }),
+      });
+  
+      if (!response.ok) {
+        // If the response status is not OK (e.g., 404, 500)
+        const errorData = await response.json(); // Parse the error response
+        throw new Error(errorData.message || "Login failed. Please try again.");
+      }
+  
+      const data = await response.json(); // Parse the successful response
+      console.log(data); // Log the response data
+      // navigate("/"); 
+      console.log("I am after axios");
+      console.log(response); // Log the response
+      navigate("/"); // Navigate to dashboard or home
+    } catch (err) {
+      setError(err.message); // Show error message
+    } finally {
+      setIsLoading(false); // Reset loading state
+    }
   };
 
   return (
@@ -67,35 +88,33 @@ function Login() {
             </motion.div>
           )}
 
-          <form className="space-y-6">
+          <form
+            onSubmit={(e) => e.preventDefault()} // Prevent default form submission
+            className="space-y-6"
+          >
             <div className="space-y-4">
               <Input
                 label="Email"
                 placeholder="Enter your email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)} // Update email state
                 className="bg-gray-700 bg-opacity-50 border border-gray-600 focus:border-blue-500 text-white placeholder-gray-400 rounded-lg"
-                // {...register("email", {
-                //   required: "Email is required",
-                //   validate: {
-                //     matchPattern: (value) =>
-                //       /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/.test(
-                //         value
-                //       ) || "Email address must be valid",
-                //   },
-                // })}
               />
 
               <Input
                 label="Password"
                 type="password"
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)} // Update password state
                 className="bg-gray-700 bg-opacity-50 border border-gray-600 focus:border-blue-500 text-white placeholder-gray-400 rounded-lg"
-                // {...register("password", { required: "Password is required" })}
               />
             </div>
 
             <Button
-              type="submit"
+              type="button"
+              onClick={handleLogin} // Trigger login on click
               disabled={isLoading}
               className={`w-full py-3 px-6 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 
                 text-white font-medium transition-all duration-200 transform hover:scale-[1.02] 

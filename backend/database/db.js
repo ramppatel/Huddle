@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 
-const uri = "mongodb+srv://202203065:606lq2zRw4fX2rnI@cluster0.n48i7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const url = process.env.MONGO_CLOUD_URL;
 
-mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.error("Error connecting to MongoDB:", err));
 
