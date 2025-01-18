@@ -26,8 +26,7 @@ const LoginPage = asyncHandler(async (req, res) => {
             httpOnly: true,
             maxAge: 60 * 1000 *5,
         });
-        const user_cookie = req.cookies.user_cookie;
-        console.log(user_cookie);
+        console.log(req.cookies.user_cookie);
         
         res.status(200).json({
             message: "Login successful",

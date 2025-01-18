@@ -10,17 +10,15 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 dotenv.config();
 
-// fixing cors issue allow all origins
 const corsOptions = {
-    origin: "*", // Your frontend's URL
-    methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
-    allowedHeaders: ["Content-Type", "Authorization", "Token"], // Allowed headers
-    // credentials: true, // Allow cookies/authentication
+    origin: "*", 
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "Token"],
   };
 
 app.use(cookieParser());
-app.use(cors(corsOptions)); // Apply CORS middleware
-app.options("*", cors(corsOptions)); // Handle preflight requests
+app.use(cors(corsOptions));
+app.options("*", cors(corsOptions));
 
 // all routes
 
