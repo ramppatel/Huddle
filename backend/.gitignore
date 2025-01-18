@@ -1,0 +1,66 @@
+# Operating System files
+.DS_Store
+Thumbs.db
+
+# Node.js dependencies
+node_modules/
+
+# Environment variables
+.env
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Build output
+dist/
+build/
+
+# Dependency directories for various package managers
+.bower_components/
+
+# IDE or editor-specific files
+.vscode/
+.idea/
+
+# MacOS-specific files
+*.swp
+*~
+*.swo
+
+# Python-specific files (if relevant)
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Ruby-specific files
+*.gem
+*.rbc
+.bundle/
+.config/
+coverage/
+InstalledFiles
+*.log
+*.pid
+*.swp
+
+# Java-specific files
+*.class
+*.jar
+*.war
+*.ear
+
+# .env file (environment variables, if relevant)
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Optional: Ignore lock files (if you're using yarn or npm)
+yarn.lock
+package-lock.json
+
+# Ignore build files (if using a build tool)
+npm-debug.log*
+yarn-error.log*
