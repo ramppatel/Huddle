@@ -19,7 +19,7 @@ const LoginPage = asyncHandler(async (req, res) => {
             return res.status(401).json({ message: "Invalid email or password" });
         }
 
-        const token = SetUser(user);
+        const token = await SetUser(user);
 
         res.cookie('user_cookie', token, {
             domain: 'localhost',   

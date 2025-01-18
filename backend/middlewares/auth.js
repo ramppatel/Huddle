@@ -1,9 +1,12 @@
+const asyncHandler = require('express-async-handler');
+
+
 const jwt = require('jsonwebtoken');
 
-function SetUser(user) {
+async function SetUser(user) {
     const secretKey = process.env.JWTSECRET;
 
-    const token = jwt.sign(
+    const token = await jwt.sign(
         {
             userId: user._id,
             email: user.email,
