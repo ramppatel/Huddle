@@ -20,11 +20,12 @@ const LoginPage = asyncHandler(async (req, res) => {
         }
 
         const token = await SetUser(user);
-
+        console.log(token);
         res.cookie('user_cookie', token, {
+            path: '/',
             domain: 'localhost',   
             httpOnly: true,
-            maxAge: 60 * 1000 *5,
+            maxAge: 60 * 1000 * 500
         });
         console.log(req.cookies.user_cookie);
         

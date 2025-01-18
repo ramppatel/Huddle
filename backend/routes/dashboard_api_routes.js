@@ -9,4 +9,9 @@ router.post('/login',LoginPage);
 // New User Signup
 router.post('/signup',SignupPage);
 
+router.get('/logout',(req,res)=>{
+    res.clearCookie('user_cookie');
+    res.status(200).json({message:"Logout successful"});
+}   )
+
 module.exports = router;
