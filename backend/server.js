@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser')
 const app = express();
 const dotenv = require('dotenv');
+const cookieParser = require('cookie-parser');
 const port = 3001
 const cors = require('cors');
 
@@ -16,7 +17,8 @@ const corsOptions = {
     allowedHeaders: ["Content-Type", "Authorization", "Token"], // Allowed headers
     // credentials: true, // Allow cookies/authentication
   };
-  
+
+app.use(cookieParser());
 app.use(cors(corsOptions)); // Apply CORS middleware
 app.options("*", cors(corsOptions)); // Handle preflight requests
 

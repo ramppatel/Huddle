@@ -1,6 +1,6 @@
 const asyncHandler = require('express-async-handler');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 const User = require('../database/db');
 const SetUser = require('../middlewares/auth')
 
@@ -21,12 +21,14 @@ const LoginPage = asyncHandler(async (req, res) => {
 
         const token = SetUser(user);
 
-        res.cookie("token", token, {
+        res.cookie('user_cookie', token, {
+            domain: 'localhost',   
             httpOnly: true,
-            sameSite: "strict",
-            maxAge: 2000 * 10000 // 5 minutes
+            maxAge: 60 * 1000 *5,
         });
-
+        const user_cookie = req.cookies.user_cookie;
+        console.log(user_cookie);
+        
         res.status(200).json({
             message: "Login successful",
             token,
@@ -38,6 +40,7 @@ const LoginPage = asyncHandler(async (req, res) => {
                 imageUrl: user.imageUrl,
             },
         });
+        // console.log(res);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Internal server error" });

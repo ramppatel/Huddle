@@ -4,6 +4,7 @@ const asyncHandler = require('express-async-handler');
 const { GetProfile } = require('../controllers/profile_controller');
 
 
-router.get('/:user_id', GetProfile);
+router.get('/:userId', GetProfile);
+
 
 module.exports = router;
