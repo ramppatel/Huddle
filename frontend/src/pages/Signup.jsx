@@ -4,39 +4,58 @@ import Button from "../components/auth/Button";
 import Input from "../components/auth/Input";
 import { motion } from "framer-motion";
 
+import axios from "axios";
+
+import { useDispatch } from "react-redux";
+import { loginStart, loginSuccess, loginFailure } from "../store/authSlice";
+
 function Signup() {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [fullName, setFullName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("");
 
   const create = async (data) => {
-    // setError("");
-    // setIsLoading(true);
-    // // console.log(data);
-    // try {
-    //   const { email } = data;
-    //   const response = await fetch(
-    //     `https://emailvalidation.abstractapi.com/v1/?api_key=${conf.abstractApiKey}&email=${email}`
-    //   );
-    //   const result = await response.json();
-    //   if (result.deliverability != "DELIVERABLE") {
-    //     setError("Email address not found.Please enter valid email address !");
-    //     setIsLoading(false);
-    //     return;
-    //   }
-    //   const userData = await authService.createAccount(data);
-    //   if (userData) {
-    //     const currentUser = await authService.getCurrentUser();
-    //     if (currentUser) {
-    //       dispatch(login(currentUser));
-    //       navigate("/");
-    //     }
-    //   }
-    // } catch (error) {
-    //   setError(error.message || "An unexpected error occurred.");
-    // } finally {
-    //   setIsLoading(false);
-    // }
+    setError("");
+    setIsLoading(true);
+    dispatch(loginStart());
+
+    try {
+      const response = await axios.post(
+        "http://localhost:3001/dashboard/api/signup",
+        {
+          email,
+          userId: userName,
+          fullName,
+          password,
+        },
+        {
+          withCredentials: true, // Equivalent to credentials: 'include'
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Axios automatically throws errors for non-2xx responses,
+      // and automatically parses JSON responses
+      console.log("Login successful");
+      dispatch(loginSuccess(response.data.user));
+      navigate("/");
+    } catch (err) {
+      // Axios wraps the response error in err.response
+      const errorMessage =
+        err.response?.data?.message || "Login failed. Please try again.";
+      setError(errorMessage);
+      dispatch(loginFailure(errorMessage));
+      console.error("Login error:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -82,35 +101,33 @@ function Signup() {
             <div className="space-y-4">
               <Input
                 label="Full Name"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
                 placeholder="Enter your full name"
                 className="bg-gray-700 bg-opacity-50 border border-gray-600 focus:border-blue-500 text-white placeholder-gray-400 rounded-lg"
-                // {...register("name", { required: "Full Name is required" })}
               />
               <Input
                 label="Username"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
                 placeholder="Enter username"
                 className="bg-gray-700 bg-opacity-50 border border-gray-600 focus:border-blue-500 text-white placeholder-gray-400 rounded-lg"
-                // {...register("name", { required: "Full Name is required" })}
               />
               <Input
                 label="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Enter your email"
                 type="email"
                 className="bg-gray-700 bg-opacity-50 border border-gray-600 focus:border-blue-500 text-white placeholder-gray-400 rounded-lg"
-                // {...register("email", {
-                //   required: "Email is required",
-                //   pattern: {
-                //     value: /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/,
-                //     message: "Email address must be valid",
-                //   },
-                // })}
               />
               <Input
                 label="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 placeholder="Enter your password"
                 className="bg-gray-700 bg-opacity-50 border border-gray-600 focus:border-blue-500 text-white placeholder-gray-400 rounded-lg"
-                // {...register("password", { required: "Password is required" })}
               />
             </div>
 

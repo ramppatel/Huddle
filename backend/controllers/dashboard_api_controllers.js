@@ -26,7 +26,6 @@ const LoginPage = asyncHandler(async (req, res) => {
       path: "/",
       domain: "localhost",
       httpOnly: true,
-      //secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 60 * 1000 * 500,
     });
@@ -51,8 +50,7 @@ const LoginPage = asyncHandler(async (req, res) => {
 // Signup Page
 const SignupPage = asyncHandler(async (req, res) => {
   try {
-    const { userId, email, password, fullName, gender, dateOfBirth, imageUrl } =
-      req.body;
+    const { fullName, userId, email, password } = req.body;
 
     const existingEmail = await User.findOne({ email });
     if (existingEmail) {
@@ -61,34 +59,33 @@ const SignupPage = asyncHandler(async (req, res) => {
 
     const existingUserId = await User.findOne({ userId });
     if (existingUserId) {
-      return res.status(400).json({ message: "User ID already in use" });
+      return res.status(400).json({ message: "Username already in use" });
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const newUser = new User({
+      fullName,
       userId,
       email,
       password: hashedPassword,
-      fullName,
-      gender,
-      dateOfBirth: dateOfBirth ? new Date(dateOfBirth) : undefined,
-      imageUrl,
-      salt,
     });
+
+    console.log(newUser);
+
+    const result = await newUser.save();
+
+    console.log(result);
 
     res.status(201).json({
       message: "Signup successful",
       user: {
-        userId: newUser.userId,
-        email: newUser.email,
         fullName: newUser.fullName,
-        role: newUser.role,
-        imageUrl: newUser.imageUrl,
+        username: newUser.userId,
+        email: newUser.email,
       },
     });
-    await newUser.save();
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Internal server error" });

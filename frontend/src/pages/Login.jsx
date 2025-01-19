@@ -5,7 +5,11 @@ import Input from "../components/auth/Input";
 import { motion } from "framer-motion";
 import axios from "axios";
 
+import { useDispatch } from "react-redux";
+import { loginStart, loginSuccess, loginFailure } from "../store/authSlice";
+
 function Login() {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -15,6 +19,7 @@ function Login() {
   const handleLogin = async () => {
     setError("");
     setIsLoading(true);
+    dispatch(loginStart());
 
     try {
       const response = await axios.post(
@@ -34,12 +39,14 @@ function Login() {
       // Axios automatically throws errors for non-2xx responses,
       // and automatically parses JSON responses
       console.log("Login successful");
+      dispatch(loginSuccess(response.data.user));
       navigate("/");
     } catch (err) {
       // Axios wraps the response error in err.response
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
       setError(errorMessage);
+      dispatch(loginFailure(errorMessage));
       console.error("Login error:", err);
     } finally {
       setIsLoading(false);

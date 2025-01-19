@@ -1,64 +1,33 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { useNavigate } from "react-router-dom";
-// import LogoutBtn from "./LogoutBtn";
+import LogoutBtn from "./LogoutBtn";
 import Logo from "./Logo";
+import { useSelector } from "react-redux";
 
 export default function Header() {
-  //   const authStatus = useSelector((state) => state.auth.status);
+  const { isAuthenticated } = useSelector((state) => state.auth);
   const navigate = useNavigate();
-
-  //   useEffect(() => {
-  //     // Animate header items on mount
-  //     gsap.fromTo(
-  //       ".nav-item",
-  //       {
-  //         y: -20,
-  //         opacity: 0,
-  //       },
-  //       {
-  //         y: 0,
-  //         opacity: 1,
-  //         duration: 0.5,
-  //         stagger: 0.1,
-  //         ease: "power2.out",
-  //       }
-  //     );
-
-  //     // Subtle hover animation for the logo
-  //     gsap.to(".logo-container", {
-  //       y: 3,
-  //       duration: 2,
-  //       ease: "power1.inOut",
-  //       yoyo: true,
-  //       repeat: -1,
-  //     });
-  //   }, []);
 
   const navItems = [
     {
       name: "Space",
-      slug: "/channels/@me",
-      //   active: !authStatus,
+      to: "/channels/@me",
     },
     {
       name: "Profile",
-      slug: "/profile",
-      //   active: !authStatus,
+      to: "/profile",
     },
     {
       name: "About Us",
-      slug: "/aboutus",
-      //   active: !authStatus,
+      to: "/aboutus",
     },
     {
       name: "Login",
-      slug: "/login",
-      //   active: !authStatus,
+      to: "/login",
     },
     {
       name: "Signup",
-      slug: "/signup",
-      //   active: !authStatus,
+      to: "/signup",
     },
   ];
 
@@ -77,26 +46,25 @@ export default function Header() {
           </div>
 
           <div className="flex items-center space-x-2 sm:space-x-4">
-            {navItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => navigate(item.slug)}
-                className="nav-item relative px-4 py-2 text-sm font-medium text-blue-300 hover:text-white transition-colors duration-200 rounded-md group"
-              >
-                <span className="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-20 rounded-md transition-opacity duration-200" />
+            {navItems.map((item) =>
+              (item.name === "Login" || item.name === "Signup") &&
+              isAuthenticated ? null : (
+                <button
+                  key={item.name}
+                  onClick={() => navigate(item.to)}
+                  className="nav-item relative px-4 py-2 text-sm font-medium text-blue-300 hover:text-white transition-colors duration-200 rounded-md group"
+                >
+                  <span className="absolute inset-0 bg-blue-600 opacity-0 group-hover:opacity-20 rounded-md transition-opacity duration-200" />
+                  <span className="relative">{item.name}</span>
+                </button>
+              )
+            )}
 
-                <span className="relative">
-                  {/* {item.name === "Editor" ? "⚡ " : ""} */}
-                  {item.name}
-                </span>
-              </button>
-            ))}
-
-            {/* {authStatus && (
+            {isAuthenticated && (
               <div className="nav-item ml-2">
                 <LogoutBtn className="px-4 py-2 text-sm font-medium text-red-300 hover:text-red-400 transition-colors duration-200 rounded-md" />
               </div>
-            )} */}
+            )}
           </div>
         </div>
       </nav>
