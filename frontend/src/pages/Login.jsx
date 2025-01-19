@@ -7,45 +7,42 @@ import axios from "axios";
 
 function Login() {
   const navigate = useNavigate();
-  const [email, setEmail] = useState(""); // State for email
-  const [password, setPassword] = useState(""); // State for password
-  const [error, setError] = useState(""); // State for error messages
-  const [isLoading, setIsLoading] = useState(false); // State for loading indicator
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
-    setError(""); // Clear previous errors
-    setIsLoading(true); // Set loading state
+    setError("");
+    setIsLoading(true);
 
     try {
-      
-      console.log("I am before axios");
-      const response = await fetch("http://localhost:3001/dashboard/api/login", {
-        method: "POST", // HTTP method
-        headers: {
-          "Content-Type": "application/json", // Set content type
+      const response = await axios.post(
+        "http://localhost:3001/dashboard/api/login",
+        {
+          email,
+          password,
         },
-        body: JSON.stringify({
-          email,       // Sending email state
-          password,    // Sending password state
-        }),
-      });
-  
-      if (!response.ok) {
-        // If the response status is not OK (e.g., 404, 500)
-        const errorData = await response.json(); // Parse the error response
-        throw new Error(errorData.message || "Login failed. Please try again.");
-      }
-  
-      const data = await response.json(); // Parse the successful response
-      console.log(data); // Log the response data
-      // navigate("/"); 
-      console.log("I am after axios");
-      console.log(response); // Log the response
-      navigate("/"); // Navigate to dashboard or home
+        {
+          withCredentials: true, // Equivalent to credentials: 'include'
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      // Axios automatically throws errors for non-2xx responses,
+      // and automatically parses JSON responses
+      console.log("Login successful");
+      navigate("/");
     } catch (err) {
-      setError(err.message); // Show error message
+      // Axios wraps the response error in err.response
+      const errorMessage =
+        err.response?.data?.message || "Login failed. Please try again.";
+      setError(errorMessage);
+      console.error("Login error:", err);
     } finally {
-      setIsLoading(false); // Reset loading state
+      setIsLoading(false);
     }
   };
 
