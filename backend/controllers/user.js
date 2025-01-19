@@ -4,8 +4,8 @@ const bcrypt = require("bcryptjs");
 const User = require("../model/user");
 const SetUser = require("../middlewares/auth");
 
-// Login Page
-const LoginPage = asyncHandler(async (req, res) => {
+// Login request
+const handleLogin = asyncHandler(async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -35,7 +35,7 @@ const LoginPage = asyncHandler(async (req, res) => {
       message: "Login successful",
       user: {
         token,
-        userId: user._id,
+        userName: user.userName,
         email: user.email,
         fullName: user.fullName,
         role: user.role,
@@ -48,18 +48,22 @@ const LoginPage = asyncHandler(async (req, res) => {
   }
 });
 
-// Signup Page
-const SignupPage = asyncHandler(async (req, res) => {
+// Signup request
+const handleSignup = asyncHandler(async (req, res) => {
   try {
-    const { fullName, userId, email, password } = req.body;
+    const { fullName, userName, email, password } = req.body;
 
-    const existingEmail = await User.findOne({ email });
+    // Normalize inputs to ensure uniqueness check works as expected
+    const normalizedEmail = email.trim().toLowerCase();
+    const normalizedUserName = userName.trim().toLowerCase();
+
+    const existingEmail = await User.findOne({ email: normalizedEmail });
     if (existingEmail) {
       return res.status(400).json({ message: "Email already in use" });
     }
 
-    const existingUserId = await User.findOne({ userId });
-    if (existingUserId) {
+    const existingUserName = await User.findOne({ userName: normalizedUserName });
+    if (existingUserName) {
       return res.status(400).json({ message: "Username already in use" });
     }
 
@@ -68,32 +72,44 @@ const SignupPage = asyncHandler(async (req, res) => {
 
     const newUser = new User({
       fullName,
-      userId,
-      email,
+      userName: normalizedUserName,
+      email: normalizedEmail,
       password: hashedPassword,
     });
 
-    console.log(newUser);
-
     const result = await newUser.save();
-
-    console.log(result);
 
     res.status(201).json({
       message: "Signup successful",
       user: {
-        fullName: newUser.fullName,
-        username: newUser.userId,
-        email: newUser.email,
+        fullName: result.fullName,
+        userName: result.userName,
+        email: result.email,
       },
     });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Internal server error" });
+
+    // Handle duplicate key error explicitly
+    if (error.code === 11000) {
+      const duplicateField = Object.keys(error.keyPattern)[0];
+      res.status(400).json({ message: `${duplicateField} already exists` });
+    } else {
+      res.status(500).json({ message: "Internal server error" });
+    }
   }
 });
 
+const updateUserProfile = async (req, res) => {
+  try{
+
+  } catch(err){
+    console.error(err);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
 module.exports = {
-  LoginPage,
-  SignupPage,
+  handleLogin,
+  handleSignup,
 };

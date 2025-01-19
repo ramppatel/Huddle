@@ -2,30 +2,38 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Camera, Calendar, Mail, User2, Edit2 } from "lucide-react";
 import Loader from "../components/Loader";
+import axios from "axios";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
+  const userName = localStorage.getItem("username");
+  const fetchUserData = async () => {
+    const res = await axios.get(`http://localhost:3001/profile/${userName}`,{
+      withCredentials: true,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }); 
+
+    console.log(res.data.user)
+
+    if(!res.data){
+      isLoading(false);
+      console.log("No data found");
+      navigate("/login");
+    }
+    else{
+        setUser(res.data.user);
+        setIsLoading(false);
+    }
+  };
+
+
   useEffect(() => {
     setIsLoading(true);
-    const fetchUserData = () => {
-      const dummyData = {
-        userId: "12345",
-        email: "johndoe@example.com",
-        imageUrl: "/api/placeholder/128/128",
-        fullName: "John Doe",
-        role: "Product Designer",
-        gender: "Male",
-        dateOfBirth: "1990-05-15",
-      };
-
-      setTimeout(() => {
-        setUser(dummyData);
-        setIsLoading(false);
-      }, 3000);
-    };
     fetchUserData();
   }, []);
 
@@ -87,8 +95,8 @@ const UserProfile = () => {
             <div className="flex items-center gap-3">
               <User2 className="w-5 h-5 text-purple-400" />
               <div>
-                <p className="text-sm text-gray-400">Gender</p>
-                <p>{user.gender}</p>
+                <p className="text-sm text-gray-400">Bio</p>
+                <p>{user.bio}</p>
               </div>
             </div>
             <div className="flex items-center gap-3">

@@ -1,17 +1,17 @@
 const asyncHandler = require('express-async-handler')
 const User = require('../model/user');
 
-const GetProfile = asyncHandler(async (req, res) => {
+const getUserProfile = asyncHandler(async (req, res) => {
     try {
         const userId = req.params.userId;
-        const user = await User.findOne( { userId });
+        const user = await User.findOne( { userName: userId });
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
         return res.status(200).json({
             message: "User found",
             user: {
-                userId: user._id,
+                userName: user.userName,
                 email: user.email,
                 fullName: user.fullName,
                 role: user.role,
@@ -26,4 +26,4 @@ const GetProfile = asyncHandler(async (req, res) => {
     }
 });
 
-module.exports = { GetProfile };
+module.exports = { getUserProfile };

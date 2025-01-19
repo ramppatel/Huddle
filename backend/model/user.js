@@ -8,11 +8,7 @@ mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
 
 const UserSchema = new mongoose.Schema(
     {
-        _id: {
-            type: mongoose.Schema.Types.ObjectId,
-            auto: true,
-        },
-        userId: {
+        userName: {
             type: String,
             required: true,
             unique: true,
@@ -41,8 +37,10 @@ const UserSchema = new mongoose.Schema(
         salt: {
             type: String,
         },
-        gender: {
+        bio: {
             type: String,
+            default: "",
+            maxlength: 500,
         },
         dateOfBirth: {
             type: Date,

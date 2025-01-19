@@ -29,7 +29,7 @@ function Signup() {
         "http://localhost:3001/dashboard/api/signup",
         {
           email,
-          userId: userName,
+          userName,
           fullName,
           password,
         },
@@ -42,7 +42,6 @@ function Signup() {
       );
 
 
-      
       console.log("Signup successful");
       // dispatch(loginSuccess(response.data.user));
       navigate("/login");

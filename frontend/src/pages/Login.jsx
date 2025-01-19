@@ -11,6 +11,7 @@ import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "../store/authSlice";
 
 export const setDataToLocalStorage = async (data) => {
+  console.log("Setting data to local storage:", data);
   const { authToken, username, image } = data;
 
   // Set items in localStorage
@@ -55,7 +56,7 @@ function Login() {
       // Store token and user data in local storage
       await setDataToLocalStorage({
         authToken: user.token,
-        username: user.userId,
+        username: user.userName,
       });
 
       // Dispatch successful login

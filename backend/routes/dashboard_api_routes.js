@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const asyncHandler = require('express-async-handler');
-const {LoginPage,SignupPage} = require('../controllers/dashboard_api_controllers');
+const {handleLogin, handleSignup} = require('../controllers/user');
 
 // Existing user login
-router.post('/login',LoginPage);
+router.post('/login', handleLogin);
 
 // New User Signup
-router.post('/signup',SignupPage);
+router.post('/signup', handleSignup);
 
 router.get('/logout',(req,res)=>{
     res.clearCookie('userCookie');
