@@ -4,11 +4,22 @@ import Button from "../components/auth/Button";
 import Input from "../components/auth/Input";
 import { motion } from "framer-motion";
 import { Toaster } from "react-hot-toast";
-import  { toast }  from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import axios from "axios";
 
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "../store/authSlice";
+
+export const setDataToLocalStorage = async (data) => {
+  const { authToken, username, image } = data;
+
+  // Set items in localStorage
+  localStorage.setItem("authToken", authToken);
+  localStorage.setItem("username", username);
+
+  // Add a 0.5-second delay
+  await new Promise((resolve) => setTimeout(resolve, 500));
+};
 
 function Login() {
   const dispatch = useDispatch();
@@ -31,28 +42,31 @@ function Login() {
           password,
         },
         {
-          withCredentials: true, // Equivalent to credentials: 'include'
+          withCredentials: true, // Ensures cookies are sent/received
           headers: {
             "Content-Type": "application/json",
           },
         }
       );
 
-      // Axios automatically throws errors for non-2xx responses,
-      // and automatically parses JSON responses
-      console.log("Login successful");
-      console.log(response.data);
-      dispatch(loginSuccess(response.data.user));
-      toast.success(response.data.message);
-      console.log("Success toast triggered");
+      // Extract necessary data from the response
+      const { authToken, user } = response.data;
 
+      // Store token and user data in local storage
+      await setDataToLocalStorage({
+        authToken: user.token,
+        username: user.userId,
+      });
+
+      // Dispatch successful login
+      console.log("Login successful");
+      dispatch(loginSuccess(user));
       navigate("/");
     } catch (err) {
-      // Axios wraps the response error in err.response
+      // Handle login errors
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
       setError(errorMessage);
-      toast.error(errorMessage);
       dispatch(loginFailure(errorMessage));
       console.error("Login error:", err);
     } finally {

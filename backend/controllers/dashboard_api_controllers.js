@@ -34,6 +34,7 @@ const LoginPage = asyncHandler(async (req, res) => {
     res.status(200).json({
       message: "Login successful",
       user: {
+        token,
         userId: user._id,
         email: user.email,
         fullName: user.fullName,
