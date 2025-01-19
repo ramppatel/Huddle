@@ -1,18 +1,13 @@
-// features/auth/authSlice.js
 import { createSlice } from "@reduxjs/toolkit";
+import { clearLocalStorage, getDataFromLocalStorage } from "../utils/auth";
 
 const getInitialState = () => {
-  // Retrieve data from local storage
-  const authToken = localStorage.getItem("authToken");
-  const username = localStorage.getItem("username");
-  const image = localStorage.getItem("image");
+  const { authToken, username } = getDataFromLocalStorage();
 
-  // Check if user is authenticated based on stored data
   if (authToken && username) {
     return {
       user: {
         username,
-        image,
       },
       isAuthenticated: true,
       isLoading: false,
@@ -20,7 +15,6 @@ const getInitialState = () => {
     };
   }
 
-  // Default state when no data in local storage
   return {
     user: null,
     isAuthenticated: false,
@@ -48,13 +42,10 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
     logout: (state) => {
-      // Clear state and local storage on logout
       state.user = null;
       state.isAuthenticated = false;
       state.error = null;
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("username");
-      localStorage.removeItem("image");
+      clearLocalStorage();
     },
   },
 });

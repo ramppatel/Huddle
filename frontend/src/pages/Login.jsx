@@ -12,7 +12,7 @@ import { loginStart, loginSuccess, loginFailure } from "../store/authSlice";
 
 export const setDataToLocalStorage = async (data) => {
   console.log("Setting data to local storage:", data);
-  const { authToken, username, image } = data;
+  const { authToken, username } = data;
 
   // Set items in localStorage
   localStorage.setItem("authToken", authToken);
@@ -50,8 +50,7 @@ function Login() {
         }
       );
 
-      // Extract necessary data from the response
-      const { authToken, user } = response.data;
+      const { user } = response.data;
 
       // Store token and user data in local storage
       await setDataToLocalStorage({

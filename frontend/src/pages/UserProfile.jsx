@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Camera, Calendar, Mail, User2, Edit2 } from "lucide-react";
 import Loader from "../components/Loader";
 import axios from "axios";
+import { store } from "../store/store";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
@@ -10,27 +11,28 @@ const UserProfile = () => {
   const navigate = useNavigate();
 
   const userName = localStorage.getItem("username");
+
+  console.log(userName);
+
   const fetchUserData = async () => {
-    const res = await axios.get(`http://localhost:3001/profile/${userName}`,{
+    const res = await axios.get(`http://localhost:3001/profile/${userName}`, {
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
-    }); 
+    });
 
-    console.log(res.data.user)
+    //console.log(res.data.user);
 
-    if(!res.data){
+    if (!res.data) {
       isLoading(false);
       console.log("No data found");
       navigate("/login");
-    }
-    else{
-        setUser(res.data.user);
-        setIsLoading(false);
+    } else {
+      setUser(res.data.user);
+      setIsLoading(false);
     }
   };
-
 
   useEffect(() => {
     setIsLoading(true);
@@ -43,16 +45,14 @@ const UserProfile = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-900 to-black text-white pb-12">
-      {/* Header with background pattern */}
       <div className="relative bg-gradient-to-b from-purple-500/10 to-transparent">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]" />
         <div className="relative max-w-3xl mx-auto px-4 pt-16 pb-24">
           <div className="flex flex-col items-center gap-8">
-            {/* Profile Image */}
             <div className="relative group">
               <div className="w-32 h-32 rounded-full overflow-hidden ring-4 ring-purple-500/30 backdrop-blur-sm">
                 <img
-                  //src={user.imageUrl}
+                  src={user.imageUrl}
                   alt={user.fullName}
                   className="w-full h-full object-cover"
                 />
