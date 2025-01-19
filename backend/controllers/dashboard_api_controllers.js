@@ -1,7 +1,7 @@
 const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcryptjs");
 // const jwt = require('jsonwebtoken');
-const User = require("../database/db");
+const User = require("../model/user");
 const SetUser = require("../middlewares/auth");
 
 // Login Page
@@ -27,7 +27,7 @@ const LoginPage = asyncHandler(async (req, res) => {
       domain: "localhost",
       httpOnly: true,
       sameSite: "strict",
-      maxAge: 60 * 1000 * 500,
+      maxAge: 1000 * 86400,
     });
 
     // Send response without token in body when using cookies

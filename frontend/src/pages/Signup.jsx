@@ -19,7 +19,7 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
-  const create = async (data) => {
+  const create = async () => {
     setError("");
     setIsLoading(true);
     dispatch(loginStart());
@@ -41,11 +41,11 @@ function Signup() {
         }
       );
 
-      // Axios automatically throws errors for non-2xx responses,
-      // and automatically parses JSON responses
-      console.log("Login successful");
-      dispatch(loginSuccess(response.data.user));
-      navigate("/");
+
+      
+      console.log("Signup successful");
+      // dispatch(loginSuccess(response.data.user));
+      navigate("/login");
     } catch (err) {
       // Axios wraps the response error in err.response
       const errorMessage =
@@ -133,6 +133,7 @@ function Signup() {
 
             <Button
               type="submit"
+              onClick={create}
               disabled={isLoading}
               className={`w-full py-3 px-6 rounded-lg bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 
                 text-white font-medium transition-all duration-200 transform hover:scale-[1.02] 

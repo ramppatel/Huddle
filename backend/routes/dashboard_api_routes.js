@@ -10,8 +10,9 @@ router.post('/login',LoginPage);
 router.post('/signup',SignupPage);
 
 router.get('/logout',(req,res)=>{
-    res.clearCookie('user_cookie');
+    res.clearCookie('userCookie');
     res.status(200).json({message:"Logout successful"});
-}   )
+  }   
+)
 
 module.exports = router;

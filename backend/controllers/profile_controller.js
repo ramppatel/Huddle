@@ -1,5 +1,5 @@
 const asyncHandler = require('express-async-handler')
-const User = require('../database/db');
+const User = require('../model/user');
 
 const GetProfile = asyncHandler(async (req, res) => {
     const userId = req.params.userId;
