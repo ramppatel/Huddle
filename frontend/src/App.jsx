@@ -4,7 +4,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
-import Profile from "./pages/UserProfile";
+import UserProfile from "./pages/UserProfile";
+import EditProfile from "./pages/EditProfile";
 
 import { Provider } from "react-redux";
 import { store } from "./store/store";
@@ -27,12 +28,25 @@ const router = createBrowserRouter([
         element: <Signup />,
       },
       {
-        path: "profile",
-        element: (
-          <ProtectedRoute>
-            <Profile />
-          </ProtectedRoute>
-        ),
+        path: "profile/",
+        children: [
+          {
+            path: "",
+            element: (
+              <ProtectedRoute>
+                <UserProfile />
+              </ProtectedRoute>
+            ),
+          },
+          {
+            path: "editprofile",
+            element: (
+              <ProtectedRoute>
+                <EditProfile />
+              </ProtectedRoute>
+            ),
+          },
+        ],
       },
     ],
   },
