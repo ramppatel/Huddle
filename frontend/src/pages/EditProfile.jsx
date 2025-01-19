@@ -13,22 +13,27 @@ import {
 import Loader from "../components/Loader";
 import axios from "axios";
 import InputField from "../components/userProfile/InputField";
-import { store } from "../store/store";
+import { useSelector } from "react-redux";
+import { selectUser } from "../store/authSlice";
+import { toast } from "react-hot-toast";
 
 const EditProfile = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState({});
 
-  const userName = localStorage.getItem("username");
+  const activeUser = useSelector(selectUser);
 
   const fetchUserData = async () => {
-    const res = await axios.get(`http://localhost:3001/profile/${userName}`, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    const res = await axios.get(
+      `http://localhost:3001/profile/${activeUser.username}`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     console.log(res.data.user);
 
@@ -61,7 +66,7 @@ const EditProfile = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:3001/profile/${userName}/editprofile`,
+        `http://localhost:3001/profile/${activeUser.username}/editprofile`,
         {
           fullName: user.fullName,
           email: user.email,
@@ -79,12 +84,16 @@ const EditProfile = () => {
 
       if (res.data) {
         setUser(res.data.user);
+        toast.success("Your profile has been successfully updated!");
         setIsLoading(false);
         navigate("/profile");
       }
     } catch (err) {
       setIsLoading(false);
       console.error("Error saving changes:", err);
+      toast.error(
+        "Profile update failed! Please check your inputs and try again."
+      );
       navigate("/login");
     }
   };

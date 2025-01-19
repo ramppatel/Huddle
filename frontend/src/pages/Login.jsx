@@ -10,18 +10,6 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "../store/authSlice";
 
-export const setDataToLocalStorage = async (data) => {
-  console.log("Setting data to local storage:", data);
-  const { authToken, username } = data;
-
-  // Set items in localStorage
-  localStorage.setItem("authToken", authToken);
-  localStorage.setItem("username", username);
-
-  // Add a 0.5-second delay
-  await new Promise((resolve) => setTimeout(resolve, 500));
-};
-
 function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -43,7 +31,7 @@ function Login() {
           password,
         },
         {
-          withCredentials: true, // Ensures cookies are sent/received
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
@@ -52,21 +40,26 @@ function Login() {
 
       const { user } = response.data;
 
-      // Store token and user data in local storage
-      await setDataToLocalStorage({
-        authToken: user.token,
-        username: user.userName,
-      });
+      const authData = {
+        user: {
+          username: user.userName,
+          email: user.email,
+          token: user.token,
+        },
+        profile: user.profile || {},
+        permissions: user.permissions || [],
+      };
 
-      // Dispatch successful login
-      console.log("Login successful");
-      dispatch(loginSuccess(user));
+      dispatch(loginSuccess(authData));
+      toast.success("Welcome back! You have successfully logged in.");
+
       navigate("/");
     } catch (err) {
-      // Handle login errors
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
       setError(errorMessage);
+      toast.error("Login failed! Please check your email and password.");
+
       dispatch(loginFailure(errorMessage));
       console.error("Login error:", err);
     } finally {

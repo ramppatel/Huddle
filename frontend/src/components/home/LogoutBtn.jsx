@@ -3,24 +3,32 @@ import { useDispatch } from "react-redux";
 import { logout } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
 export default function LogoutBtn({ className }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const logoutHandler = async () => {
-    dispatch(logout());
+    try {
+      dispatch(logout());
 
-    const res = await axios.get("http://localhost:3001/dashboard/api/logout",{
-      withCredentials: true, // Equivalent to credentials: 'include'
+      const res = await axios.get(
+        "http://localhost:3001/dashboard/api/logout",
+        {
+          withCredentials: true,
           headers: {
             "Content-Type": "application/json",
           },
-    });
+        }
+      );
 
-    console.log(res.data.message);
+      toast.success("You have successfully logged out. See you soon!");
 
-    navigate("/");
+      navigate("/");
+    } catch (err) {
+      toast.error("Logout failed! Please try again.");
+    }
   };
 
   return (

@@ -11,6 +11,8 @@ import { Provider } from "react-redux";
 import { store } from "./store/store";
 import ProtectedRoute from "./components/ProtectedRoute";
 
+import Toast from "../src/components/Toast";
+
 const router = createBrowserRouter([
   {
     path: "/",
@@ -39,7 +41,7 @@ const router = createBrowserRouter([
             ),
           },
           {
-            path: "editprofile",
+            path: "edit",
             element: (
               <ProtectedRoute>
                 <EditProfile />
@@ -55,6 +57,7 @@ const router = createBrowserRouter([
 function App() {
   return (
     <Provider store={store}>
+      <Toast />
       <RouterProvider router={router} />
     </Provider>
   );

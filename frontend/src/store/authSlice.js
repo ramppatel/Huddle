@@ -1,26 +1,55 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { clearLocalStorage, getDataFromLocalStorage } from "../utils/auth";
+
+const AUTH_STORAGE_KEY = "auth";
+
+const storage = {
+  get: () => {
+    try {
+      const data = localStorage.getItem(AUTH_STORAGE_KEY);
+      return data ? JSON.parse(data) : null;
+    } catch (error) {
+      console.error("Error reading from localStorage:", error);
+      return null;
+    }
+  },
+
+  set: (data) => {
+    try {
+      localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(data));
+    } catch (error) {
+      console.error("Error writing to localStorage:", error);
+    }
+  },
+
+  clear: () => {
+    try {
+      localStorage.removeItem(AUTH_STORAGE_KEY);
+    } catch (error) {
+      console.error("Error clearing localStorage:", error);
+    }
+  },
+};
+
+const initialState = {
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  lastLogin: null,
+};
 
 const getInitialState = () => {
-  const { authToken, username } = getDataFromLocalStorage();
+  const authData = storage.get();
 
-  if (authToken && username) {
+  if (authData?.user) {
     return {
-      user: {
-        username,
-      },
+      ...initialState,
+      user: authData.user,
       isAuthenticated: true,
-      isLoading: false,
-      error: null,
+      lastLogin: authData.lastLogin,
     };
   }
 
-  return {
-    user: null,
-    isAuthenticated: false,
-    isLoading: false,
-    error: null,
-  };
+  return initialState;
 };
 
 const authSlice = createSlice({
@@ -29,27 +58,42 @@ const authSlice = createSlice({
   reducers: {
     loginStart: (state) => {
       state.isLoading = true;
-      state.error = null;
     },
     loginSuccess: (state, action) => {
+      const { user } = action.payload;
       state.isLoading = false;
       state.isAuthenticated = true;
-      state.user = action.payload;
-      state.error = null;
+      state.user = user;
+      state.lastLogin = new Date().toISOString();
+
+      storage.set({
+        user,
+        lastLogin: state.lastLogin,
+      });
     },
     loginFailure: (state, action) => {
       state.isLoading = false;
-      state.error = action.payload;
     },
     logout: (state) => {
-      state.user = null;
-      state.isAuthenticated = false;
-      state.error = null;
-      clearLocalStorage();
+      Object.assign(state, initialState);
+      storage.clear();
+    },
+    updateProfile: (state, action) => {
+      state.profile = { ...state.profile, ...action.payload };
+      storage.set({
+        user: state.user,
+        lastLogin: state.lastLogin,
+      });
     },
   },
 });
 
-export const { loginStart, loginSuccess, loginFailure, logout } =
+// Selectors
+export const selectUser = (state) => state.auth.user;
+export const selectIsAuthenticated = (state) => state.auth.isAuthenticated;
+
+// Actions
+export const { loginStart, loginSuccess, loginFailure, logout, updateProfile } =
   authSlice.actions;
+
 export default authSlice.reducer;

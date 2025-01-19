@@ -3,26 +3,26 @@ import { useNavigate } from "react-router-dom";
 import { Camera, Calendar, Mail, User2, Edit2 } from "lucide-react";
 import Loader from "../components/Loader";
 import axios from "axios";
-import { store } from "../store/store";
+import { useSelector } from "react-redux";
+import { selectUser } from "../store/authSlice";
 
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
-  const userName = localStorage.getItem("username");
-
-  console.log(userName);
+  const activeUser = useSelector(selectUser);
 
   const fetchUserData = async () => {
-    const res = await axios.get(`http://localhost:3001/profile/${userName}`, {
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-
-    //console.log(res.data.user);
+    const res = await axios.get(
+      `http://localhost:3001/profile/${activeUser.username}`,
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (!res.data) {
       isLoading(false);
@@ -70,7 +70,7 @@ const UserProfile = () => {
 
             {/* Action Button */}
             <button
-              onClick={() => navigate("editprofile")}
+              onClick={() => navigate("edit")}
               className="px-6 py-2 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all flex items-center gap-2"
             >
               <Edit2 className="w-4 h-4" />

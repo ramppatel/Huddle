@@ -106,23 +106,20 @@ const updateUserProfile = async (req, res) => {
   try {
     const { userId } = req.params;
     const { fullName, email, imageUrl, bio, dateOfBirth } = req.body;
-    console.log(req.body);
     const user = await User.findOne({ userName: userId });
+
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // Update the user profile fields
     if (fullName) user.fullName = fullName;
     if (email) user.email = email;
     if (imageUrl) user.imageUrl = imageUrl;
     if (bio) user.bio = bio;
     if (dateOfBirth) user.dateOfBirth = dateOfBirth;
 
-    // Save the updated user data
     await user.save();
 
-    // Send a success response with updated user details
     res.status(200).json({
       message: "Profile updated successfully",
       user: {
