@@ -5,6 +5,7 @@ const dotenv = require("dotenv");
 const cookieParser = require("cookie-parser");
 const port = 3001;
 const cors = require("cors");
+const userRoute = require("./routes/user")
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -24,11 +25,9 @@ app.use(cookieParser());
 // all routes
 
 // login signup routes
-app.use("/dashboard/api/", require("./routes/dashboard_api_routes"));
-// profile routes
-app.use("/profile/", require("./routes/profile_routes"));
+app.use("/api/user", userRoute);
 
-app.get("/dashboard/api/login", (req, res) => {
+app.get("/api/user/login", (req, res) => {
   res.send("Hello from Dashboard API Login");
 });
 

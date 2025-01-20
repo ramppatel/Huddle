@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const url = process.env.MONGO_CLOUD_URL;
+const url = 'mongodb+srv://202203065:606lq2zRw4fX2rnI@cluster0.n48i7.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
 
 mongoose.connect(url, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("Connected to MongoDB"))

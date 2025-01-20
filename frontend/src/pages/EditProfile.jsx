@@ -16,6 +16,8 @@ import InputField from "../components/userProfile/InputField";
 import { useSelector } from "react-redux";
 import { selectUser } from "../store/authSlice";
 import { toast } from "react-hot-toast";
+import useAPI from "../hooks/useAPI";
+
 
 const EditProfile = () => {
   const navigate = useNavigate();
@@ -24,9 +26,11 @@ const EditProfile = () => {
 
   const activeUser = useSelector(selectUser);
 
+  const { GET } = useAPI();
+
   const fetchUserData = async () => {
     const res = await axios.get(
-      `http://localhost:3001/profile/${activeUser.username}`,
+      `http://localhost:3001/api/user/${activeUser.username}`,
       {
         withCredentials: true,
         headers: {
@@ -64,9 +68,11 @@ const EditProfile = () => {
     e.preventDefault();
     setIsLoading(true);
 
+    const { PUT } = useAPI();
+
     try {
       const res = await axios.put(
-        `http://localhost:3001/profile/${activeUser.username}/editprofile`,
+        `http://localhost:3001/api/user/profile/${activeUser.username}/editprofile`,
         {
           fullName: user.fullName,
           email: user.email,

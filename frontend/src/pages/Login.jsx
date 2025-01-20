@@ -3,8 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/auth/Button";
 import Input from "../components/auth/Input";
 import { motion } from "framer-motion";
-import { Toaster } from "react-hot-toast";
 import { toast } from "react-hot-toast";
+import useAPI from "../hooks/useAPI";
 import axios from "axios";
 
 import { useDispatch } from "react-redux";
@@ -23,9 +23,11 @@ function Login() {
     setIsLoading(true);
     dispatch(loginStart());
 
+    const { POST } = useAPI();
+
     try {
       const response = await axios.post(
-        "http://localhost:3001/dashboard/api/login",
+        "http://localhost:3001/api/user/login",
         {
           email,
           password,
@@ -37,7 +39,7 @@ function Login() {
           },
         }
       );
-
+      console.log(response);
       const { user } = response.data;
 
       const authData = {
@@ -58,7 +60,7 @@ function Login() {
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
       setError(errorMessage);
-      toast.error("Login failed! Please check your email and password.");
+      toast.error(errorMessage);
 
       dispatch(loginFailure(errorMessage));
       console.error("Login error:", err);
@@ -96,16 +98,6 @@ function Login() {
                 </Link>
               </p>
             </div>
-
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-red-500 bg-opacity-10 border border-red-500 rounded-lg p-4 mb-6"
-              >
-                <p className="text-red-500 text-center text-sm">{error}</p>
-              </motion.div>
-            )}
 
             <form
               onSubmit={(e) => e.preventDefault()} // Prevent default form submission
@@ -171,7 +163,6 @@ function Login() {
           </div>
         </motion.div>
       </div>
-      <Toaster />
     </div>
   );
 }

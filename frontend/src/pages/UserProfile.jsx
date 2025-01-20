@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Camera, Calendar, Mail, User2, Edit2 } from "lucide-react";
 import Loader from "../components/Loader";
 import axios from "axios";
+import useAPI from "../hooks/useAPI";
 import { useSelector } from "react-redux";
 import { selectUser } from "../store/authSlice";
 
@@ -13,9 +14,11 @@ const UserProfile = () => {
 
   const activeUser = useSelector(selectUser);
 
+  const { GET } = useAPI();
+
   const fetchUserData = async () => {
     const res = await axios.get(
-      `http://localhost:3001/profile/${activeUser.username}`,
+      `http://localhost:3001/api/user/${activeUser.username}`,
       {
         withCredentials: true,
         headers: {

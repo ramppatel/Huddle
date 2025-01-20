@@ -4,17 +4,20 @@ import { logout } from "../../store/authSlice";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import useAPI from "../../hooks/useAPI";
 
 export default function LogoutBtn({ className }) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const { GET } = useAPI();
 
   const logoutHandler = async () => {
     try {
       dispatch(logout());
 
       const res = await axios.get(
-        "http://localhost:3001/dashboard/api/logout",
+        "http://localhost:3001/api/user/logout",
         {
           withCredentials: true,
           headers: {

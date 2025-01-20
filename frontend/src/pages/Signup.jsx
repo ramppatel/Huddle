@@ -3,8 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import Button from "../components/auth/Button";
 import Input from "../components/auth/Input";
 import { motion } from "framer-motion";
-
+import { toast } from "react-hot-toast";
 import axios from "axios";
+import useAPI from "../hooks/useAPI";
 
 import { useDispatch } from "react-redux";
 import { loginStart, loginSuccess, loginFailure } from "../store/authSlice";
@@ -19,6 +20,8 @@ function Signup() {
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
 
+  const { POST } = useAPI();
+
   const create = async () => {
     setError("");
     setIsLoading(true);
@@ -26,7 +29,7 @@ function Signup() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3001/dashboard/api/signup",
+        "http://localhost:3001/api/user/signup",
         {
           email,
           userName,
@@ -43,6 +46,7 @@ function Signup() {
 
 
       console.log("Signup successful");
+      toast.success("Account created successfully. Please login.");
       // dispatch(loginSuccess(response.data.user));
       navigate("/login");
     } catch (err) {
@@ -50,6 +54,7 @@ function Signup() {
       const errorMessage =
         err.response?.data?.message || "Login failed. Please try again.";
       setError(errorMessage);
+      toast.error(errorMessage);
       dispatch(loginFailure(errorMessage));
       console.error("Login error:", err);
     } finally {
@@ -85,16 +90,6 @@ function Signup() {
               </Link>
             </p>
           </div>
-
-          {error && (
-            <motion.div
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="bg-red-500 bg-opacity-10 border border-red-500 rounded-lg p-4 mb-6"
-            >
-              <p className="text-red-500 text-center text-sm">{error}</p>
-            </motion.div>
-          )}
 
           <form className="space-y-6">
             <div className="space-y-4">
